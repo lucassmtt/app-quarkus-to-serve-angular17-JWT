@@ -46,4 +46,40 @@ class UserResource {
         }
     }
 
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    fun updateUser(@PathParam("id") id: Long, updatedUser: User): Response {
+        val existingUser = userRepository.findById(id)
+        if (existingUser != null) {
+            existingUser.apply {
+                name = updatedUser.name
+                email = updatedUser.email
+                userName = updatedUser.userName
+            }
+            userRepository.persist(existingUser)
+            return Response.ok(existingUser).build()
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build()
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    fun deleteUser(@PathParam("id") id: Long): Response {
+        val existingUser = userRepository.findById(id)
+        if (existingUser != null) {
+            userRepository.delete(existingUser)
+            return Response.noContent().build()
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build()
+        }
+    }
+
+    private fun isValidUser(user: User): Boolean {
+        return user.userName != null && user.name != null && user.email != null
+    }
+
 }
