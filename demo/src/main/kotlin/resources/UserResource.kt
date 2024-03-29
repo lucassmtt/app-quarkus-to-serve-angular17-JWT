@@ -32,6 +32,18 @@ class UserResource {
         return userRepository.findAll().list()
     }
 
+    @GET
+    @Path("/{id}")
+    fun getById(id : Long) : Any {
+        var user = userRepository.findByIdLong(id);
+
+        if (user !== null) {
+            return user;
+        } else {
+            return ResponseBadRequest()
+        }
+    }
+
     @Path("/add/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -75,7 +87,7 @@ class UserResource {
     fun deleteUser(@PathParam ("id") id: Long): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {
-            userRepository.delete(existingUser)
+            userRepository.deleteUser(id)
             return Response.noContent().build()
         } else {
             return Response.status(Response.Status.NOT_FOUND).build()

@@ -15,4 +15,10 @@ class UserRepository : PanacheRepository<User> {
 
     fun findAll(sort : String) : List<User> = findAll(sort)
 
+    fun deleteUser(id : Long) = deleteById(id)
+
+    fun findByIdLong(id : Long) : User? {
+        return findById(id)
+    }
+
 }
