@@ -6,14 +6,18 @@ import helpers.ResponseBadRequest
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheQuery
 import jakarta.inject.Inject
 import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.DELETE
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
+import jakarta.ws.rs.PUT
 import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import org.jboss.logging.annotations.Param
 import repositories.UserRepository
+import services.UserService
 
 @Path("user")
 class UserResource {
@@ -21,36 +25,36 @@ class UserResource {
     @Inject
     lateinit var userRepository: UserRepository
 
+    @Inject
+    lateinit var userService: UserService
     @GET
     fun getAll(): List<User> {
-        var users: PanacheQuery<User> = userRepository.findAll();
-
-        return users.list();
+        return userRepository.findAll().list()
     }
 
-    @Path("/add/{json}")
+    @Path("/add/")
     @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     fun addUser(@Param json: String): Any? {
         var user = Gson().fromJson(json, User::class.java);
 
-        if (user.userName != null && user.name != null && user.email != null) {
-
-            userRepository.persist(user);
-
-            return Response.ok(user);
-
+        if (user.id === null) {
+            // Create
+            user = userService.createUser(user) as User?
         } else {
-            return ResponseBadRequest().resourceNotCreateResponse();
+            // Update
+            userService.createUser(user);
         }
+
+        return Response.ok(user);
     }
 
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    fun updateUser(@PathParam("id") id: Long, updatedUser: User): Response {
+    fun updateUser(@PathParam ("id") id: Long, updatedUser: User): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {
             existingUser.apply {
@@ -68,7 +72,7 @@ class UserResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    fun deleteUser(@PathParam("id") id: Long): Response {
+    fun deleteUser(@PathParam ("id") id: Long): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {
             userRepository.delete(existingUser)
@@ -76,10 +80,6 @@ class UserResource {
         } else {
             return Response.status(Response.Status.NOT_FOUND).build()
         }
-    }
-
-    private fun isValidUser(user: User): Boolean {
-        return user.userName != null && user.name != null && user.email != null
     }
 
 }
