@@ -4,25 +4,25 @@ import com.github.javafaker.Faker
 import entities.User
 import jakarta.inject.Inject
 import services.UserService
+import java.util.Scanner
 
 class UserDataFake {
 
     @Inject
     lateinit var userService : UserService;
 
-    fun createUsersObjWithoutCount() {
-
-        System.out.println("The default of creation data is 30");
-
-        createUsersObj(30);
-    }
-
 
     fun createUsersObj(numObjs : Int) {
 
+        var numDefault : Int = 30;
+
+        if (numObjs < 1000 || numObjs > 1) {
+            numDefault = numObjs;
+        }
+
         val faker = Faker();
 
-        for (i in 1.. numObjs) {
+        for (i in 1.. numDefault) {
 
             var user = User();
 
@@ -34,6 +34,5 @@ class UserDataFake {
 
         }
     }
-
 
 }
