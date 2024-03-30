@@ -2,6 +2,8 @@ package resources
 
 import com.google.gson.Gson
 import entities.User
+import entities.dto.UserDto
+import helpers.JsonConverter
 import helpers.ResponseBadRequest
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheQuery
 import jakarta.inject.Inject
@@ -28,8 +30,15 @@ class UserResource {
     @Inject
     lateinit var userService: UserService
     @GET
-    fun getAll(): List<User> {
-        return userRepository.findAll().list()
+    @Produces(MediaType.APPLICATION_JSON)
+    fun getAll(): String? {
+        var users: List<User>;
+
+        users = userRepository.findAll().list();
+
+        val usersDto = users.map { user -> UserDto(user.userName, user.email, user.name) }
+
+        return Gson().toJson(usersDto);
     }
 
     @GET
