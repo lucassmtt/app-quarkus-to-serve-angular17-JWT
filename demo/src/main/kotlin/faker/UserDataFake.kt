@@ -28,7 +28,7 @@ class UserDataFake @Inject constructor(var userService: UserService) {
 
             var user = User()
 
-            user.userName = faker.name().username()
+            user.username = faker.name().username()
             user.email = faker.internet().emailAddress()
             user.name = faker.name().name()
 

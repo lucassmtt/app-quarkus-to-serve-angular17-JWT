@@ -36,7 +36,7 @@ class UserResource {
 
         users = userRepository.findAll().list();
 
-        val usersDto = users.map { user -> UserDto(user.userName, user.email, user.name) }
+        val usersDto = users.map { user -> UserDto(user.username, user.email, user.name) }
 
         return Gson().toJson(usersDto);
     }
@@ -81,7 +81,7 @@ class UserResource {
             existingUser.apply {
                 name = updatedUser.name
                 email = updatedUser.email
-                userName = updatedUser.userName
+                username = updatedUser.username
             }
             userRepository.persist(existingUser)
             return Response.ok(existingUser).build()

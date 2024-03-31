@@ -33,4 +33,21 @@ class UserService {
         }
 
     }
+
+    fun  findByUsernameOrEmail(usernameOrEmail: String): User {
+
+        var user: User
+
+        if (usernameOrEmail.contains("@")) {
+            user = userRepository.findByEmail(usernameOrEmail)!!;
+        } else {
+            user = userRepository.findByUsername(usernameOrEmail)!!;
+        }
+
+        return user;
+    }
+
+    fun verifiyPassword(user: User, password: String) {
+        userRepository.findByPassword()
+    }
 }

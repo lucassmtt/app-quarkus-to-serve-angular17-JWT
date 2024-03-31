@@ -79,6 +79,15 @@
             <artifactId>javafaker</artifactId>
             <version>0.15</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt-build</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
