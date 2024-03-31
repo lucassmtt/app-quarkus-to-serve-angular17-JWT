@@ -1,10 +1,12 @@
 package repositories
 
 import entities.User
+import io.quarkus.hibernate.orm.panache.Panache
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheQuery
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.persistence.EntityManager
+import jakarta.persistence.Query
 import jakarta.transaction.Transactional
 
 @ApplicationScoped
@@ -24,10 +26,18 @@ class UserRepository : PanacheRepository<User> {
 
     fun findByUsername(username: String): User? = find("username", username).firstResult()
 
-    fun findByPassword(password: String, user: User) {
-        var sql: String = "select u from tb_user u where u.email = ?1 and u.username = ?2 and u.password = ?3";
+    fun findByPassword(password: String, user: User): Boolean {
 
-        return find(query = sql, params = user.email, user.username, user.password)
+        val sql = "SELECT u FROM tb_user u WHERE u.email = :email AND u.username = :username AND u.password = :password"
 
+        val query: Query = Panache.getEntityManager().createQuery(sql)
+
+        query.setParameter("email", user.email)
+        query.setParameter("username", user.username)
+        query.setParameter("password", user.password)
+
+        val result = query.resultList
+
+        return result.isNotEmpty()
     }
 }
