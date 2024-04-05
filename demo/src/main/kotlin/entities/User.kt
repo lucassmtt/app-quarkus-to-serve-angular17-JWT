@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.auth.AuthProvider
 import io.vertx.ext.auth.User
 import io.vertx.ext.auth.authorization.Authorization
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
@@ -20,8 +21,10 @@ class User : User {
 
     lateinit var name: String
 
+    @Column(unique = true)
     lateinit var email: String
 
+    @Column(unique = true)
     lateinit var username: String
 
     lateinit var password: String

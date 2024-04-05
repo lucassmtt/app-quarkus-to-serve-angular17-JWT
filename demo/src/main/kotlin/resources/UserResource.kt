@@ -69,11 +69,8 @@ class UserResource {
         if (user.id === null) {
             // Create
             user = userService.createUser(user) as User?
-        } else {
-            // Update
-            userService.createUser(user);
-        }
 
+        }
         return Response.ok(user);
     }
 
@@ -85,13 +82,17 @@ class UserResource {
     fun updateUser(@PathParam ("id") id: Long, updatedUser: User): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {
+
             existingUser.apply {
                 name = updatedUser.name
                 email = updatedUser.email
                 username = updatedUser.username
             }
+
             userRepository.persist(existingUser)
+
             return Response.ok(existingUser).build()
+
         } else {
             return Response.status(Response.Status.NOT_FOUND).build()
         }
@@ -103,9 +104,13 @@ class UserResource {
     @Authenticated
     fun deleteUser(@PathParam ("id") id: Long): Response {
         val existingUser = userRepository.findById(id)
+
         if (existingUser != null) {
+
             userRepository.deleteUser(id)
+
             return Response.noContent().build()
+
         } else {
             return Response.status(Response.Status.NOT_FOUND).build()
         }

@@ -26,7 +26,7 @@ class UserRepository : PanacheRepository<User> {
 
     fun findByUsername(username: String): User? = find("username", username).firstResult()
 
-    fun findByPassword(password: String, user: User): Boolean {
+    fun findByPassword(user: User, password: String): Boolean {
 
         val sql = "SELECT u FROM tb_user u WHERE u.email = :email AND u.username = :username AND u.password = :password"
 
@@ -34,7 +34,7 @@ class UserRepository : PanacheRepository<User> {
 
         query.setParameter("email", user.email)
         query.setParameter("username", user.username)
-        query.setParameter("password", user.password)
+        query.setParameter("password", password)
 
         val result = query.resultList
 

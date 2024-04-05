@@ -1,12 +1,14 @@
 package services
 
-import com.github.javafaker.Bool
+import TokenUtils
 import entities.User
+import io.vertx.codegen.doc.Token
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import jakarta.ws.rs.BadRequestException
+import jakarta.ws.rs.core.Response
 import repositories.UserRepository
 
 @ApplicationScoped
@@ -25,7 +27,15 @@ class UserService {
 
             manager.persist(user);
 
-            return user;
+            val token = TokenUtils()
+
+            if (user.username === null) {
+                val token = TokenUtils().generateToken(user.username)
+            } else {
+                val token = TokenUtils().generateToken(user.email)
+            }
+
+            return Response.ok(token).build()
 
         } else {
 
@@ -48,16 +58,6 @@ class UserService {
         return user;
     }
 
-    fun verifiyPassword(user: User, password: String): Boolean {
+    fun verifyPassword(user: User, password: String): Boolean = userRepository.findByPassword(user, password)
 
-
-        if (userRepository.findByPassword(password, user)) {
-
-            createNewToken(UserDatails.getDatails(user))
-
-
-
-        }
-
-    }
 }
