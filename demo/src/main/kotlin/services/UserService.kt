@@ -1,5 +1,6 @@
 package services
 
+import com.github.javafaker.Bool
 import entities.User
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -47,7 +48,16 @@ class UserService {
         return user;
     }
 
-    fun verifiyPassword(user: User, password: String) {
-        userRepository.findByPassword()
+    fun verifiyPassword(user: User, password: String): Boolean {
+
+
+        if (userRepository.findByPassword(password, user)) {
+
+            createNewToken(UserDatails.getDatails(user))
+
+
+
+        }
+
     }
 }

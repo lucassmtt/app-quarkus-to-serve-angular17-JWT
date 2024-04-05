@@ -6,6 +6,8 @@ import entities.dto.UserDto
 import helpers.JsonConverter
 import helpers.ResponseBadRequest
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheQuery
+import io.quarkus.security.Authenticated
+import jakarta.annotation.security.PermitAll
 import jakarta.inject.Inject
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.DELETE
@@ -29,6 +31,8 @@ class UserResource {
 
     @Inject
     lateinit var userService: UserService
+
+    @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     fun getAll(): String? {
@@ -43,6 +47,7 @@ class UserResource {
 
     @GET
     @Path("/{id}")
+    @Authenticated
     fun getById(id : Long) : Any {
         var user = userRepository.findByIdLong(id);
 
@@ -57,6 +62,7 @@ class UserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Authenticated
     fun addUser(@Param json: String): Any? {
         var user = Gson().fromJson(json, User::class.java);
 
@@ -75,6 +81,7 @@ class UserResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Authenticated
     fun updateUser(@PathParam ("id") id: Long, updatedUser: User): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {
@@ -93,6 +100,7 @@ class UserResource {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Authenticated
     fun deleteUser(@PathParam ("id") id: Long): Response {
         val existingUser = userRepository.findById(id)
         if (existingUser != null) {

@@ -88,6 +88,7 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-jwt-build</artifactId>
         </dependency>
+
     </dependencies>
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>

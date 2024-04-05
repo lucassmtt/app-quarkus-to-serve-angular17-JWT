@@ -1,6 +1,10 @@
 package resources
 
+import TokenUtils
+import io.smallrye.jwt.build.Jwt
+import io.smallrye.jwt.build.JwtSignature
 import io.vertx.ext.auth.User
+import jakarta.annotation.security.PermitAll
 import jakarta.inject.Inject
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -23,6 +27,7 @@ class AuthResource {
 
     @POST
     @Path("/login")
+    @PermitAll
     fun login(usernameOrEmail: String, password: String): Response {
 
         var user: entities.User
@@ -32,14 +37,13 @@ class AuthResource {
         if (user != null) {
             userService.verifiyPassword(user, password)
 
-            val token = generateToken(user)
+            val token = TokenUtils().generateToken(usernameOrEmail)
 
-            return Response.ok(token).build();
-            }
+            return Response.ok(token).build()
+
         }
 
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-
 
 }
