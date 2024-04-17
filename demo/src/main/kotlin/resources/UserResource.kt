@@ -61,7 +61,7 @@ class UserResource {
     @Path("/add/")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)r
     @Authenticated
     fun addUser(@Param json: String): Any? {
         var user = Gson().fromJson(json, User::class.java);
